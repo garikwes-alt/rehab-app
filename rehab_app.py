@@ -1,32 +1,15 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Реабілітаційний Асистент v0.12", layout="wide")
+st.set_page_config(page_title="Реабілітаційний Асистент v0.13", layout="wide")
 
-# Список 19 категорій
 CATEGORIES = [
-    "Стопи",
-    "Литки",
-    "ЗПС (задня поверхня стегна)",
-    "ППС (передня поверхня стегна)",
-    "ВПС (внутрішня поверхня стегна)",
-    "ЗовПС (зовнішня поверхня стегна)",
-    "ЯГ (сідниці)",
-    "Квадрати",
-    "Пресс",
-    "Найширша",
-    "Клубов (клубовопоперековий)",
-    "Ромби",
-    "Трапеція",
-    "Шия",
-    "Плечі",
-    "Кисті та передпліччя",
-    "Грудні",
-    "Дихання",
-    "Сколіоз"
+    "Стопи", "Литки", "ЗПС (задня поверхня стегна)", "ППС (передня поверхня стегна)",
+    "ВПС (внутрішня поверхня стегна)", "ЗовПС (зовнішня поверхня стегна)", "ЯГ (сідниці)",
+    "Квадрати", "Пресс", "Найширша", "Клубов (клубовопоперековий)", "Ромби",
+    "Трапеція", "Шия", "Плечі", "Кисті та передпліччя", "Грудні", "Дихання", "Сколіоз"
 ]
 
-# Тестові дані вправ
 data = [
     {"id": 1, "name": "23 нб", "category": "ЯГ (сідниці)", "action": "Укріплення", "description": "Укріплення сідниць (ЯГ)"},
     {"id": 2, "name": "Др на ч", "category": "Клубов (клубовопоперековий)", "action": "Укріплення та Розтяжка", "description": "Укріплення клубовопоперекового, розтяжка клуб., розтяжка прессу, укріплення ППС"},
@@ -42,23 +25,25 @@ data = [
 
 df = pd.DataFrame(data)
 
-st.title("🩺 Асистент підбору реабілітаційних вправ (Версія 0.12)")
-st.markdown("Зручний підбір вправ із формуванням програми пацієнта в реальному часі.")
+st.title("🩺 Асистент підбору реабілітаційних вправ (Версія 0.13)")
+st.markdown("Зручний підбір вправ із синхронізованим керуванням програмою пацієнта.")
 
-# Ініціалізація списку обраних вправ у пам'яті сесії
 if "selected_exercises" not in st.session_state:
     st.session_state.selected_exercises = []
 
-# --- БІЧНА ПАНЕЛЬ НАВІГАЦІЇ ТА ПРОГРАМИ ПАЦІЄНТА ---
-st.sidebar.header("📋 Програма пацієнта")
+name_to_row = {row['name']: row for _, row in df.iterrows()}
 
-# Показуємо поточний список вибраних вправ
+# --- БІЧНА ПАНЕЛЬ ---
+st.sidebar.header("📋 Програма пацієнта")
 selected_count = len(st.session_state.selected_exercises)
 st.sidebar.markdown(f"**Обрано вправ:** {selected_count} / ~20")
 
 if selected_count > 0:
-    # Кнопка очистити все
     if st.sidebar.button("🗑️ Очистити всю програму"):
+        for ex_name in st.session_state.selected_exercises:
+            if ex_name in name_to_row:
+                r_id = name_to_row[ex_name]['id']
+                st.session_state[f"ex_v13_{r_id}"] = False
         st.session_state.selected_exercises = []
         st.rerun()
         
@@ -67,8 +52,10 @@ if selected_count > 0:
     for ex_name in st.session_state.selected_exercises:
         col_s1, col_s2 = st.sidebar.columns([4, 1])
         col_s1.text(f"• {ex_name}")
-        # Кнопка видалення окремої вправи
         if col_s2.button("❌", key=f"del_{ex_name}"):
+            if ex_name in name_to_row:
+                r_id = name_to_row[ex_name]['id']
+                st.session_state[f"ex_v13_{r_id}"] = False
             st.session_state.selected_exercises.remove(ex_name)
             st.rerun()
 else:
@@ -86,7 +73,6 @@ elif selected_category == "Сколіоз":
 
 keyword = st.sidebar.text_input("Або пошук за ключовим словом:")
 
-# --- ОСНОВНА ЛОГІКА ФІЛЬТРАЦІЇ ТА ВИВЕДЕННЯ ---
 filtered_df = df.copy()
 
 if keyword:
@@ -116,16 +102,21 @@ else:
             st.write(f"**Опис / Дія:** {row['description']}")
             st.write(f"**Тип:** {row['action']}")
             
-            # Чекбокс із прив'язкою до стану сесії
+            def on_checkbox_change(r_name=row['name'], widget_key=f"ex_v13_{row['id']}"):
+                if st.session_state[widget_key]:
+                    if r_name not in st.session_state.selected_exercises:
+                        st.session_state.selected_exercises.append(r_name)
+                else:
+                    if r_name in st.session_state.selected_exercises:
+                        st.session_state.selected_exercises.remove(r_name)
+
             is_checked = row['name'] in st.session_state.selected_exercises
-            checkbox_val = st.checkbox(f"Додати у програму пацієнта ({row['name']})", value=is_checked, key=f"ex_v12_{row['id']}")
-            
-            if checkbox_val and not is_checked:
-                st.session_state.selected_exercises.append(row['name'])
-                st.rerun()
-            elif not checkbox_val and is_checked:
-                st.session_state.selected_exercises.remove(row['name'])
-                st.rerun()
+            st.checkbox(
+                f"Додати у програму пацієнта ({row['name']})", 
+                value=is_checked, 
+                key=f"ex_v13_{row['id']}",
+                on_change=on_checkbox_change
+            )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("*Версія 0.12 — Інтерактивна програма пацієнта.*")
+st.sidebar.markdown("*Версія 0.13 — Синхронізоване керування програмою.*")
