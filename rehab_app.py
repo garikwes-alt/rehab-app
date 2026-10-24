@@ -1,10 +1,9 @@
-
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Реабілітаційний Асистент v0.11", layout="wide")
+st.set_page_config(page_title="Реабілітаційний Асистент v0.12", layout="wide")
 
-# Список 19 категорій згідно з вимогами
+# Список 19 категорій
 CATEGORIES = [
     "Стопи",
     "Литки",
@@ -27,101 +26,67 @@ CATEGORIES = [
     "Сколіоз"
 ]
 
-# Оновлені тестові дані з прив'язкою до нових категорій та дій (Укріплення / Розтяжка / Корекція)
+# Тестові дані вправ
 data = [
-    {
-        "id": 1,
-        "name": "23 нб",
-        "category": "ЯГ (сідниці)",
-        "action": "Укріплення",
-        "description": "Укріплення сідниць (ЯГ)"
-    },
-    {
-        "id": 2,
-        "name": "Др на ч",
-        "category": "Клубов (клубовопоперековий)",
-        "action": "Укріплення та Розтяжка",
-        "description": "Укріплення клубовопоперекового, розтяжка клубовопоперекового, розтяжка прессу, укріплення передньої поверхні стегна (ППС)"
-    },
-    {
-        "id": 3,
-        "name": "20 нб",
-        "category": "ППС (передня поверхня стегна)",
-        "action": "Розтяжка",
-        "description": "Розтяжка ППС"
-    },
-    {
-        "id": 4,
-        "name": "21 бок",
-        "category": "ВПС (внутрішня поверхня стегна)",
-        "action": "Укріплення",
-        "description": "Укріплення внутрішньої поверхні стегна"
-    },
-    {
-        "id": 5,
-        "name": "28",
-        "category": "ЗПС (задня поверхня стегна)",
-        "action": "Укріплення та Розтяжка",
-        "description": "Укріплення задньої поверхні стегна (ЗПС), розтяжка ЗПС"
-    },
-    {
-        "id": 6,
-        "name": "7 вб",
-        "category": "Найширша",
-        "action": "Укріплення та Мобілізація",
-        "id_secondary": "Грудні",
-        "description": "Укріплення найширшого м'яза, тракція грудного відділу"
-    },
-    {
-        "id": 7,
-        "name": "Пила от",
-        "category": "Найширша",
-        "action": "Комплекс",
-        "description": "Укріплення найширшого, розтяжка ЗПС, розтяжка ЯГ, укріплення ЯГ, розтяжка квадратних м'язів (Квадрати)"
-    },
-    {
-        "id": 8,
-        "name": "Шифт гвх",
-        "category": "Сколіоз",
-        "action": "Корекція грудного відділу",
-        "description": "Корекція грудного відділу при сколіозі"
-    },
-    {
-        "id": 9,
-        "name": "23-2 сколіоз",
-        "category": "Сколіоз",
-        "action": "Корекція поперекового відділу",
-        "description": "Корекція поперекового відділу при сколіозі"
-    },
-    {
-        "id": 10,
-        "name": "22 стоя",
-        "category": "ЗовПС (зовнішня поверхня стегна)",
-        "action": "Укріплення",
-        "description": "Укріплення зовнішньої поверхні стегна, укріплення ЯГ"
-    }
+    {"id": 1, "name": "23 нб", "category": "ЯГ (сідниці)", "action": "Укріплення", "description": "Укріплення сідниць (ЯГ)"},
+    {"id": 2, "name": "Др на ч", "category": "Клубов (клубовопоперековий)", "action": "Укріплення та Розтяжка", "description": "Укріплення клубовопоперекового, розтяжка клуб., розтяжка прессу, укріплення ППС"},
+    {"id": 3, "name": "20 нб", "category": "ППС (передня поверхня стегна)", "action": "Розтяжка", "description": "Розтяжка ППС"},
+    {"id": 4, "name": "21 бок", "category": "ВПС (внутрішня поверхня стегна)", "action": "Укріплення", "description": "Укріплення внутрішньої поверхні стегна"},
+    {"id": 5, "name": "28", "category": "ЗПС (задня поверхня стегна)", "action": "Укріплення та Розтяжка", "description": "Укріплення ЗПС, розтяжка ЗПС"},
+    {"id": 6, "name": "7 вб", "category": "Найширша", "action": "Укріплення та Мобілізація", "description": "Укріплення найширшого м'яза, тракція грудного відділу"},
+    {"id": 7, "name": "Пила от", "category": "Найширша", "action": "Комплекс", "description": "Укріплення найширшого, розтяжка ЗПС, розтяжка ЯГ, укріплення ЯГ, розтяжка квадратних м'язів"},
+    {"id": 8, "name": "Шифт гвх", "category": "Сколіоз", "action": "Корекція грудного відділу", "description": "Корекція грудного відділу при сколіозі"},
+    {"id": 9, "name": "23-2 сколіоз", "category": "Сколіоз", "action": "Корекція поперекового відділу", "description": "Корекція поперекового відділу при сколіозі"},
+    {"id": 10, "name": "22 стоя", "category": "ЗовПС (зовнішня поверхня стегна)", "action": "Укріплення", "description": "Укріплення зовнішньої поверхні стегна, укріплення ЯГ"}
 ]
 
 df = pd.DataFrame(data)
 
-st.title("🩺 Асистент підбору реабілітаційних вправ (Версія 0.11)")
-st.markdown("Оновлена структура з 19 категоріями та розділенням на «Укріплення» / «Розтяжка» для основних м'язових груп.")
+st.title("🩺 Асистент підбору реабілітаційних вправ (Версія 0.12)")
+st.markdown("Зручний підбір вправ із формуванням програми пацієнта в реальному часі.")
 
-# Бічна панель навігації та фільтрації
-st.sidebar.header("Навігація по базі")
+# Ініціалізація списку обраних вправ у пам'яті сесії
+if "selected_exercises" not in st.session_state:
+    st.session_state.selected_exercises = []
+
+# --- БІЧНА ПАНЕЛЬ НАВІГАЦІЇ ТА ПРОГРАМИ ПАЦІЄНТА ---
+st.sidebar.header("📋 Програма пацієнта")
+
+# Показуємо поточний список вибраних вправ
+selected_count = len(st.session_state.selected_exercises)
+st.sidebar.markdown(বহт`**Обрано вправ:** {selected_count} / ~20`)
+
+if selected_count > 0:
+    # Кнопка очистити все
+    if st.sidebar.button("🗑️ Очистити всю програму"):
+        st.session_state.selected_exercises = []
+        st.rerun()
+        
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("**Склад програми:**")
+    for ex_name in st.session_state.selected_exercises:
+        col_s1, col_s2 = st.sidebar.columns([4, 1])
+        col_s1.text(f"• {ex_name}")
+        # Кнопка видалення окремої вправи
+        if col_s2.button("❌", key=f"del_{ex_name}"):
+            st.session_state.selected_exercises.remove(ex_name)
+            st.rerun()
+else:
+    st.sidebar.info("Програма поки що порожня. Обирайте вправи нижче.")
+
+st.sidebar.markdown("---")
+st.sidebar.header("🔍 Навігація по базі")
 selected_category = st.sidebar.selectbox("Оберіть розділ (категорію):", ["Всі розділи"] + CATEGORIES)
 
-# Фільтрація підкатегорій (Укріплення / Розтяжка) для категорій 1-17
 sub_action = "Всі"
 if selected_category not in ["Всі розділи", "Дихання", "Сколіоз"]:
     sub_action = st.sidebar.radio("Оберіть підрозділ:", ["Всі", "Укріплення", "Розтяжка", "Інше / Комплекс"])
 elif selected_category == "Сколіоз":
     sub_action = st.sidebar.selectbox("Напрямок корекції:", ["Всі", "Корекція грудного відділу", "Корекція поперекового відділу"])
 
-# Пошук за ключовим словом
 keyword = st.sidebar.text_input("Або пошук за ключовим словом:")
 
-# Логіка фільтрації
+# --- ОСНОВНА ЛОГІКА ФІЛЬТРАЦІЇ ТА ВИВЕДЕННЯ ---
 filtered_df = df.copy()
 
 if keyword:
@@ -149,8 +114,18 @@ else:
     for idx, row in filtered_df.iterrows():
         with st.expander(f"🔹 {row['name']} (Категорія: {row['category']})"):
             st.write(f"**Опис / Дія:** {row['description']}")
-            st.write(гф := f"**Тип:** {row['action']}")
-            st.checkbox(f"Додати у програму пацієнта ({row['name']})", key=f"ex_v11_{row['id']}")
+            st.write(f"**Тип:** {row['action']}")
+            
+            # Чекбокс із прив'язкою до стану сесії
+            is_checked = row['name'] in st.session_state.selected_exercises
+            checkbox_val = st.checkbox(f"Додати у програму пацієнта ({row['name']})", value=is_checked, key=f"ex_v12_{row['id']}")
+            
+            if checkbox_val and not is_checked:
+                st.session_state.selected_exercises.append(row['name'])
+                st.rerun()
+            elif not checkbox_val and is_checked:
+                st.session_state.selected_exercises.remove(row['name'])
+                st.rerun()
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("*Версія 0.11 — Режим відшліфування структури.*")
+st.sidebar.markdown("*Версія 0.12 — Інтерактивна програма пацієнта.*")
