@@ -54,7 +54,7 @@ st.sidebar.header("📋 Програма пацієнта")
 
 # Показуємо поточний список вибраних вправ
 selected_count = len(st.session_state.selected_exercises)
-st.sidebar.markdown(বহт`**Обрано вправ:** {selected_count} / ~20`)
+st.sidebar.markdown(f"**Обрано вправ:** {selected_count} / ~20")
 
 if selected_count > 0:
     # Кнопка очистити все
