@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Реабілітаційний Асистент v0.18", layout="wide")
+st.set_page_config(page_title="Реабілітаційний Асистент v0.19", layout="wide")
 
 CATEGORIES = [
     "Баланс",
@@ -21,7 +21,8 @@ CATEGORIES = [
     "Грудний відділ хребта (ГВХ)",
     "Трапеція",
     "Шия",
-    "Ротатори (РТТ)"
+    "Ротатори (РТТ)",
+    "Сколіоз"
 ]
 
 # Повна база сортованих вправ з Telegram-каналу «Спина+. Методичка» (Версія 0.18)
@@ -2001,4 +2002,4 @@ else:
             )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("*Версія 0.18 — Виправлено всі зауваження.*")
+st.sidebar.markdown("*Версія 0.19 — Додано розділ Сколіоз.*")
