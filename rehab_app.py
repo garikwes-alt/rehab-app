@@ -8,12 +8,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- ФІРМОВИЙ СТИЛЬ ТА ДИЗАЙН SPINA+ (v0.21) ---
+# --- ФІРМОВИЙ СТИЛЬ ТА ДИЗАЙН SPINA+ (v0.22) ---
 st.markdown("""
 <style>
     /* Головне тло та шрифти */
     .stApp {
-        background-color: #f8fafc;
+        background-color: #e0f2fe;
         color: #1e293b;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
@@ -26,7 +26,7 @@ st.markdown("""
     
     /* Сайдбар */
     [data-testid="stSidebar"] {
-        background-color: #0f172a;
+        background-color: #1e293b;
         color: #f1f5f9;
         padding-top: 1rem;
     }
