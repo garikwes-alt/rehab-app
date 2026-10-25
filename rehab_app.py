@@ -1,7 +1,87 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Реабілітаційний Асистент Spina+ v0.20", layout="wide")
+st.set_page_config(
+    page_title="Spina+ | Реабілітаційний Асистент",
+    page_icon="🩺",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# --- ФІРМОВИЙ СТИЛЬ ТА ДИЗАЙН SPINA+ (v0.21) ---
+st.markdown("""
+<style>
+    /* Головне тло та шрифти */
+    .stApp {
+        background-color: #f8fafc;
+        color: #1e293b;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    /* Заголовки */
+    h1, h2, h3 {
+        color: #0f172a;
+        font-weight: 700;
+    }
+    
+    /* Сайдбар */
+    [data-testid="stSidebar"] {
+        background-color: #0f172a;
+        color: #f1f5f9;
+        padding-top: 1rem;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown, 
+    [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] span {
+        color: #f1f5f9 !important;
+    }
+    
+    /* Експандери / Картки вправ */
+    .streamlit-expanderHeader {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        font-weight: 600;
+        color: #0f172a !important;
+        transition: all 0.2s ease;
+    }
+    .streamlit-expanderHeader:hover {
+        border-color: #38bdf8 !important;
+        background-color: #f0f9ff !important;
+    }
+    
+    /* Кнопки */
+    .stButton>button {
+        background-color: #0284c7;
+        color: white;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+        transition: all 0.2s ease;
+    }
+    .stButton>button:hover {
+        background-color: #0369a1;
+        box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3);
+    }
+    
+    /* Інформаційні блоки */
+    .stAlert {
+        border-radius: 10px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Логотип Spina+ у сайдбарі
+st.sidebar.markdown(
+    f"<div style='text-align: center; padding: 10px 0 20px 0;'>"
+    f"<img src='data:image/png;base64,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' style='max-width: 180px; width: 100%; height: auto;'>"
+    f"</div>",
+    unsafe_allow_html=True
+)
 
 CATEGORIES = [
     "Баланс",
