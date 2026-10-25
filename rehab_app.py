@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Реабілітаційний Асистент v0.19", layout="wide")
+st.set_page_config(page_title="Реабілітаційний Асистент Spina+ v0.20", layout="wide")
 
 CATEGORIES = [
     "Баланс",
@@ -1914,7 +1914,7 @@ raw_exercises = [
 
 df = pd.DataFrame(raw_exercises)
 
-st.title("🩺 Асистент підбору реабілітаційних вправ (Версія 0.18)")
+st.title("🩺 Spina+ | Асистент підбору реабілітаційних вправ")
 st.markdown("Повністю оновлена та виправлена база вправ із каналу **«Спина+. Методичка»** відповідно до ваших зауважень.")
 
 if "selected_exercises" not in st.session_state:
@@ -2002,4 +2002,4 @@ else:
             )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("*Версія 0.19 — Додано розділ Сколіоз.*")
+st.sidebar.markdown("*Версія 0.20 — Фірмовий стиль Spina+ (дизайн та кольорова гама).*")
